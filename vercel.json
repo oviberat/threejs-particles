@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/unpkg/:path*",
+        "destination": "https://unpkg.com/:path*"
+      }
+    ]
+  }
