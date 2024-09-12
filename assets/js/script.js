@@ -46,7 +46,7 @@ async function init() {
     const texture = await new Promise((resolve, reject) => {
       new RGBELoader()
         .setPath('assets/textures/equirectangular/')
-        .load('hdr.hdr', resolve, undefined, reject);
+        .load('hdri3.hdr', resolve, undefined, reject);
     });
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.background = texture;
@@ -85,7 +85,7 @@ function loadModel() {
     const dracoLoader = new DRACOLoader().setDecoderPath('decoder/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    gltfLoader.load('new shoot.glb', (gltf) => {
+    gltfLoader.load('vertex color.glb', (gltf) => {
       setupAnimations(gltf);  // Animasyonları burada başlatmak yerine sadece kuruyoruz
       resolve(gltf.scene);
     }, undefined, reject);
@@ -109,7 +109,7 @@ function centerAndScaleModel(model) {
 function setupAnimations(gltf) {
   mixer = new THREE.AnimationMixer(gltf.scene);
 
-  gltf.animations.slice(1).forEach((clip) => { // İlk animasyonu atlayarak
+  gltf.animations.forEach((clip) => { // İlk animasyonu atlayarak
     const action = mixer.clipAction(clip);
     action.setLoop(THREE.LoopOnce); // Animasyon sadece bir kez oynayacak
     action.clampWhenFinished = true; // Bittiğinde animasyon son pozisyonda kalacak
