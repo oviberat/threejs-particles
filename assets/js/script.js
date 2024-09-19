@@ -31,6 +31,7 @@ async function init() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
+  renderer.toneMappingExposure = 1.5; // Adjust this value to control brightness
 
   // Initialize camera
   camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 3000);
@@ -46,7 +47,7 @@ async function init() {
     const texture = await new Promise((resolve, reject) => {
       new RGBELoader()
         .setPath('assets/textures/equirectangular/')
-        .load('hdri3.hdr', resolve, undefined, reject);
+        .load('HDR ELF.hdr', resolve, undefined, reject);
     });
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.background = texture;
@@ -64,12 +65,15 @@ async function init() {
     console.error('Model yüklenirken hata:', error);
   }
 
-  // Add lights
-  const light = new THREE.DirectionalLight(0xffffff, 1.5);
-  light.position.set(0, 0, 1);
-  scene.fog = new THREE.FogExp2(0x000000, 0.0008);
-  scene.add(light);
+  // Add lights 
+  const light = new THREE.DirectionalLight(0xffffff, 30);  // Increased intensity
+const light2 = new THREE.DirectionalLight(0xffffff, 15);  // Increased intensity 
 
+light.position.set(0, 100, 100);
+light2.position.set(100, 100, 0);
+
+scene.add(light);
+scene.add(light2); 
   // Add event listeners
   document.body.style.touchAction = "none";
   document.body.addEventListener("pointermove", onPointerMove);
@@ -85,7 +89,7 @@ function loadModel() {
     const dracoLoader = new DRACOLoader().setDecoderPath('decoder/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    gltfLoader.load('vertex color.glb', (gltf) => {
+    gltfLoader.load('clloratoin.glb', (gltf) => {
       setupAnimations(gltf);  // Animasyonları burada başlatmak yerine sadece kuruyoruz
       resolve(gltf.scene);
     }, undefined, reject);
