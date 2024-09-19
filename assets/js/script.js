@@ -7,6 +7,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 let camera, scene, renderer, stats, mixer, clock;
 let mouse = { X: 0 };
 let model;
+let modelped;
 let windowHalfX = window.innerWidth / 2;
 let actions = []; // Animasyonları saklamak için bir dizi
 
@@ -35,8 +36,8 @@ async function init() {
 
   // Initialize camera
   camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 3000);
-  camera.position.z = 1000;
-
+  camera.position.z =1000;
+  camera.position.x=1000;
   // Initialize scene
   scene = new THREE.Scene();
 
@@ -58,22 +59,22 @@ async function init() {
 
   // Load GLB model
   try {
-    model = await loadModel();
+    model = await loadModelElf();
+    modelped = await loadModelPed();
     scene.add(model);
+    scene.add(modelped);
     centerAndScaleModel(model);
+    centerAndScaleModelPed(modelped)
   } catch (error) {
     console.error('Model yüklenirken hata:', error);
   }
 
   // Add lights 
-  const light = new THREE.DirectionalLight(0xffffff, 30);  // Increased intensity
-const light2 = new THREE.DirectionalLight(0xffffff, 15);  // Increased intensity 
+  const light = new THREE.DirectionalLight(0xffffff, 30);    // Increased intensity 
 
-light.position.set(0, 100, 100);
-light2.position.set(100, 100, 0);
+light.position.set(0, 100, 100); 
 
-scene.add(light);
-scene.add(light2); 
+scene.add(light); 
   // Add event listeners
   document.body.style.touchAction = "none";
   document.body.addEventListener("pointermove", onPointerMove);
@@ -83,31 +84,56 @@ scene.add(light2);
   });
 }
 
-function loadModel() {
+function loadModelElf() {
   return new Promise((resolve, reject) => {
     const gltfLoader = new GLTFLoader().setPath('models/gltf/');
     const dracoLoader = new DRACOLoader().setDecoderPath('decoder/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    gltfLoader.load('clloratoin.glb', (gltf) => {
+    gltfLoader.load('elf.glb', (gltf) => {
       setupAnimations(gltf);  // Animasyonları burada başlatmak yerine sadece kuruyoruz
       resolve(gltf.scene);
     }, undefined, reject);
   });
 }
 
+function loadModelPed() {
+  return new Promise((resolve, reject) => {
+    const gltfLoader = new GLTFLoader().setPath('models/gltf/');
+    const dracoLoader = new DRACOLoader().setDecoderPath('decoder/');
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    gltfLoader.load('pedestal.glb', (gltf) => {
+         // Animasyonları burada başlatmak yerine sadece kuruyoruz
+      resolve(gltf.scene);
+    }, undefined, reject);
+  });
+}
 function centerAndScaleModel(model) {
   const box = new THREE.Box3().setFromObject(model);
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
 
   model.position.x -= center.x;
-  model.position.y -= center.y + 700;
+  model.position.y -= center.y + 850;
   model.position.z -= center.z;
 
   const maxDimension = Math.max(size.x, size.y, size.z);
   const scale = 10 / maxDimension;
   model.scale.set(scale, scale, scale);
+}
+function centerAndScaleModelPed(model) {
+  const box = new THREE.Box3().setFromObject(model);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+
+  model.position.x -= center.x;
+  model.position.y -= center.y + 1200;
+  model.position.z -= center.z;
+
+  const maxDimension = Math.max(size.x, size.y, size.z);
+  const scale = 1500 / maxDimension;
+  model.scale.set(2000, scale, 2000);
 }
 
 function setupAnimations(gltf) {
