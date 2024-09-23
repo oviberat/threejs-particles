@@ -70,7 +70,7 @@ async function init() {
   }
 
   // Add lights 
-  const light = new THREE.DirectionalLight(0xffffff, 30);    // Increased intensity 
+  const light = new THREE.DirectionalLight(0xffffff, 1);    // Increased intensity 
 
 light.position.set(0, 100, 100); 
 
@@ -90,7 +90,7 @@ function loadModelElf() {
     const dracoLoader = new DRACOLoader().setDecoderPath('decoder/');
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    gltfLoader.load('elf.glb', (gltf) => {
+    gltfLoader.load('elfshoot.glb', (gltf) => {
       setupAnimations(gltf);  // Animasyonları burada başlatmak yerine sadece kuruyoruz
       resolve(gltf.scene);
     }, undefined, reject);
